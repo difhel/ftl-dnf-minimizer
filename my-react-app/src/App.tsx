@@ -26,6 +26,30 @@ const App: React.FC = () => {
     setHeadState(head);
     setCellColors(initialColors);
   };
+
+  // table coloring
+  const fillCell = (row: number, col: number, colorRGB: number[]) => {
+    const currentColor = cellColors[row][col];
+    const newColor = [
+      Math.round((currentColor[0] + colorRGB[0]) / 2),
+      Math.round((currentColor[1] + colorRGB[1]) / 2),
+      Math.round((currentColor[2] + colorRGB[2]) / 2),
+    ];
+
+    const newCellColors = [...cellColors];
+    newCellColors[row][col] = newColor;
+    setCellColors(newCellColors);
+
+    // const cellKey = `cell-${row}-${col}`;
+    // console.log(cellKey);
+    // const cellElement = document.getElementById(cellKey);
+    // if (cellElement) {
+    //     console.log(cellElement);
+    //     const newColorStyle = `rgb(${newColor[0]}, ${newColor[1]}, ${newColor[2]})`;
+    //     cellElement.style.backgroundColor = newColorStyle;
+    // }
+  };
+
   const [variablesCount, setVariablesCount] = useState(2);
   const [functionNumber, setFunctionNumber] = useState(1);
 
@@ -34,7 +58,7 @@ const App: React.FC = () => {
 
   const variablesCountInput = <input type={"range"} min={2} max={6} onChange={(event) => (setVariablesCount(parseInt(event.target.value)))} value={variablesCount} />;
 
-  const inputsForm = <form className={'inputs'} onSubmit={(e) => {e.preventDefault()}}>
+  const inputsForm = <form className={'inputs'} onSubmit={(e) => { e.preventDefault() }}>
     <label>Variables count: {variablesCount} {variablesCountInput}</label>
     <label>
       Function number:
@@ -60,7 +84,7 @@ const App: React.FC = () => {
     console.log('head', head);
     updateTableData({ cellColors: cellColors, table: table, head: head, primaryColStart: 1, primaryColEnd: 10 })
   }, [functionNumberNotState, variablesCountNotState])
-  
+
 
   return (
     <div>
@@ -69,6 +93,8 @@ const App: React.FC = () => {
       {inputsForm}
 
       <MyTable head={headState} table={tableState} cellColors={cellColors} primaryColStart={1} primaryColEnd={variablesCountNotState} />
+
+      <button onClick={() => {fillCell(0, 0, [255, 0, 0])}}>Magic</button>
     </div>
   );
 };
