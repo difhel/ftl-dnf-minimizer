@@ -1,0 +1,28 @@
+form.inputs {
+  max-width: fit-content;
+}
+
+form.inputs {
+  margin: 12px 0;
+}
+
+form.inputs > label > * {
+  margin: 0 10px;
+}
+
+form.inputs > label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+form.inputs > label > input[type=number], input[type=range] {
+  width: 10rem;
+}
+
+form.inputs > label > input[type=number] {
+  padding: 3px;
+  border: 0;
+  border-radius: 8px;
+}

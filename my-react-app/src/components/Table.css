@@ -1,0 +1,20 @@
+/* table td + td { border-left:2px solid red; } */
+td, th {
+    border: 1px solid dodgerblue;
+    border-collapse: collapse;
+}
+table {
+    border-spacing: 0;
+    border: 3px solid dodgerblue;
+    border-radius: 12px;
+    font-family: monospace;
+}
+
+td {
+    padding: 5px;
+}
+
+.primary {
+    background-color: darkcyan !important;
+    color: white !important;
+}
