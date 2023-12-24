@@ -77,6 +77,7 @@ const App: React.FC = () => {
       setVariablesCountNotState(variablesCount);
     }}>Generate table</button>
 
+    <br />
     <button onClick={() => {
       getData(table).then((data: number[][][]) => {
         console.log(data);
