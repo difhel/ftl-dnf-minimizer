@@ -97,8 +97,8 @@ const App: React.FC = () => {
   useEffect(() => {
     // assert(functionNumber == functionNumberNotState);
     let { head, table } = getTable(variablesCountNotState, functionNumberNotState);
-    console.log('functionNumberNotState', functionNumberNotState);
-    console.log('head', head);
+    // console.log('functionNumberNotState', functionNumberNotState);
+    // console.log('head', head);
     updateTableData({ cellColors: cellColors, table: table, head: head, primaryColStart: 1, primaryColEnd: 10 })
   }, [functionNumberNotState, variablesCountNotState])
 
