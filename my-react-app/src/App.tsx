@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { MyTable, TableProps } from './components/Table';
 import getTable from './GetTable';
+import getData from './API';
 import './App.css';
 
 
@@ -75,6 +76,21 @@ const App: React.FC = () => {
       setFunctionNumberNotState(functionNumber);
       setVariablesCountNotState(variablesCount);
     }}>Generate table</button>
+
+    <button onClick={() => {
+      getData(table).then((data: number[][][]) => {
+        console.log(data);
+        const randomColor = [
+          Math.round(Math.random() * 255),
+          Math.round(Math.random() * 255),
+          Math.round(Math.random() * 255)
+        ]
+        for (let i = 0; i < data[0].length; i++) {
+          fillCell(data[0][i][0], data[0][i][1], randomColor);
+          // console.log('cell colors', cellColors);
+        }
+      });
+    }}>Solve</button>
   </form>;
 
   useEffect(() => {
@@ -94,7 +110,7 @@ const App: React.FC = () => {
 
       <MyTable head={headState} table={tableState} cellColors={cellColors} primaryColStart={1} primaryColEnd={variablesCountNotState} />
 
-      <button onClick={() => {fillCell(0, 0, [255, 0, 0])}}>Magic</button>
+      <button onClick={() => { fillCell(0, 0, [255, 0, 0]) }}>Magic</button>
     </div>
   );
 };
