@@ -63,7 +63,7 @@ const App: React.FC = () => {
     <label>Variables count: {variablesCount} {variablesCountInput}</label>
     <label>
       Function number:
-      <input type={"number"} min={0} max={(1 << (1 << variablesCount)) - 1} onChange={(event) => {
+      <input type={"number"} min={0} max={variablesCount < 5 ? (1 << (1 << variablesCount)) - 1 : Infinity} onChange={(event) => {
         if (!(event.target.value == "" || event.target.value == undefined)) {
           if (parseInt(event.target.value) < 0) return setFunctionNumber(0);
           if (parseInt(event.target.value) > parseInt(event.target.max)) return setFunctionNumber(parseInt(event.target.max));
