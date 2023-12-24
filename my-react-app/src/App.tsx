@@ -6,7 +6,7 @@ import './App.css';
 
 
 const App: React.FC = () => {
-  const { head, table } = getTable(6, 59188);
+  const { head, table } = getTable(6, 59188n);
   const rows = table.length;
   const cols = table[0].length;
   const initialColors: number[][][] = Array.from({ length: rows }, () =>
@@ -52,7 +52,7 @@ const App: React.FC = () => {
   };
 
   const [variablesCount, setVariablesCount] = useState(2);
-  const [functionNumber, setFunctionNumber] = useState(1);
+  const [functionNumber, setFunctionNumber] = useState(0n);
 
   const [variablesCountNotState, setVariablesCountNotState] = useState(variablesCount);
   const [functionNumberNotState, setFunctionNumberNotState] = useState(functionNumber);
@@ -65,11 +65,11 @@ const App: React.FC = () => {
       Function number:
       <input type={"number"} min={0} max={variablesCount < 5 ? (1 << (1 << variablesCount)) - 1 : Infinity} onChange={(event) => {
         if (!(event.target.value == "" || event.target.value == undefined)) {
-          if (parseInt(event.target.value) < 0) return setFunctionNumber(0);
-          if (parseInt(event.target.value) > parseInt(event.target.max)) return setFunctionNumber(parseInt(event.target.max));
+          if (BigInt(event.target.value) < 0n) return setFunctionNumber(0n);
+          if (BigInt(event.target.value) > (1n << (1n << BigInt(variablesCount))) - 1n) return setFunctionNumber((1n << (1n << BigInt(variablesCount))) - 1n);
         }
-        setFunctionNumber(parseInt(event.target.value))
-      }} value={functionNumber} />
+        setFunctionNumber(BigInt(event.target.value))
+      }} value={functionNumber.toString()} />
     </label>
 
     <button onClick={() => {

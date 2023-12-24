@@ -25,12 +25,12 @@ function generateVariables(count: number): string[] {
     return variables;
 }
 
-function toBinary(bits: number, functionNumber: number): Boolean[] {
+function toBinary(bits: number, functionNumber: bigint): Boolean[] {
     let functionArr: Boolean[] = [];
 
-    while (functionNumber > 0) {
-        functionArr.unshift(functionNumber % 2 === 1);
-        functionNumber = Math.floor(functionNumber / 2);
+    while (functionNumber > 0n) {
+        functionArr.unshift(functionNumber % 2n === 1n);
+        functionNumber >>= 1n;
     }
     while (bits > functionArr.length) {
         functionArr.unshift(false);
@@ -54,11 +54,11 @@ function transposeMatrix(matrix: string[][]): string[][] {
     return transposed;
 }
 
-function getFunctionArgs(varsCount: number, num: number): Boolean[] {
+function getFunctionArgs(varsCount: number, num: bigint): Boolean[] {
     return toBinary(varsCount, num);
 }
 
-const getTable = (varsCount: number, functionNumber: number) => {
+const getTable = (varsCount: number, functionNumber: bigint) => {
     // debugger;
     const variables = generateVariables(varsCount);
     const head = ["f", ...generateCombinations(variables)];
@@ -67,7 +67,7 @@ const getTable = (varsCount: number, functionNumber: number) => {
     rows.push(functionValues.map((value) => value ? "1" : "0"));
     let table = transposeMatrix(rows);
     for (let i = 0; i < 1 << varsCount; i++) {
-        table[i].push(...getFunctionArgs(varsCount, i).map((value) => value ? "1" : "0"));
+        table[i].push(...getFunctionArgs(varsCount, BigInt(i)).map((value) => value ? "1" : "0"));
     }
     for (let i = 0; i < 1 << varsCount; i++) {
         for (let j = 0; j < head.length - varsCount - 1; j++) {
@@ -77,7 +77,7 @@ const getTable = (varsCount: number, functionNumber: number) => {
             for (let k = 0; k < currentRow.length; k++) {
                 let variableIndex = variables.indexOf(currentRow[k]);
                 // console.log(`index of ${currentRow[k]}: ${variableIndex} ${getFunctionArgs(varsCount, i)[variableIndex]}`);
-                let variableValue = getFunctionArgs(varsCount, i)[variableIndex] ? "1" : "0";
+                let variableValue = getFunctionArgs(varsCount, BigInt(i))[variableIndex] ? "1" : "0";
                 currentRowValue += variableValue;
             }
             table[i].push(`${currentRowValue}`);
