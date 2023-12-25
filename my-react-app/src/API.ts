@@ -12,7 +12,8 @@ const getData = async (array: string[][]): Promise<any> => {
     // this function returns list of all steps
     return [
         [[0, 0], [0, 1], [0, 2], [1, 5]],
-        [[2, 0], [2, 1], [2, 2], [2, 5]]
+        [[2, 0], [2, 1], [2, 2], [2, 5]],
+        [[3, 0], [3, 5], [3, 6], [3, 10]]
     ];
 }
 
