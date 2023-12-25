@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { MyTable, TableProps } from './components/Table';
 import getTable from './GetTable';
-import getData from './API';
+import { request } from './API';
+import Latex from 'react-latex-next'
 import './App.css';
 
 // const delay = () => new Promise((resolve) => setTimeout(resolve, 0));
@@ -78,7 +79,7 @@ const App: React.FC = () => {
       {
         states.map((state, index) => {
           return (
-            <button key={index} className={activeState == index ? 'active' : ''}onClick={
+            <button key={index} className={activeState == index ? 'active' : ''} onClick={
               () => {
                 setActiveState(index);
                 fillTable(state);
@@ -120,7 +121,10 @@ const App: React.FC = () => {
   //   // });
   // }, [buttonClicked])
 
-  useEffect(() => {setActiveState(states.length - 1);}, [states])
+  useEffect(() => { setActiveState(states.length - 1); }, [states])
+
+  // latex answers
+  const [answer, setAnswer] = useState([] as string[]);
 
   const inputsForm = <form className={'inputs'} onSubmit={(e) => { e.preventDefault() }}>
     <label>Variables count: {variablesCount} {variablesCountInput}</label>
@@ -143,22 +147,29 @@ const App: React.FC = () => {
     <br />
     <button
       onClick={async () => {
-        const data = await getData(table)
+        const data = (await request(table)).data;
+        const answers = (await request(table)).answer;
         for (let stateId = 0; stateId < data.length && stateId >= 0; stateId++) {
           await fillWithOneState(data[stateId]);
-          // await delay();
-          // await new Promise(r => setTimeout(r, 5000));
           console.log("stateId", stateId, "current colors[2]", states)
-          // if ((await fetch("https://jsonplaceholder.typicode.com/posts/1")).status == 400) break;
-          // setButtonClicked(buttonClicked => !buttonClicked)
-          // await new Promise(resolve => {
-          //   // setButtonClicked(buttonClicked => !buttonClicked);
-          //   resolve(true);
-          // });
+          setAnswer(answers);
         }
       }}
     >Solve</button>
   </form>;
+
+  const answersBlock = <div className={'answersBlock'}>
+    {
+      answer.map((ans, index) => {
+        return (
+          <div key={index}>
+            <h2>Answer {index + 1}</h2>
+            <Latex>{"$" + ans + "$"}</Latex>
+          </div>
+        )
+      })
+    }
+  </div>
 
   useEffect(() => {
     // assert(functionNumber == functionNumberNotState);
@@ -178,6 +189,8 @@ const App: React.FC = () => {
       {tableComponent}
 
       {renderStates}
+
+      {answersBlock}
 
       <button onClick={() => { console.log(states) }}>Magic</button>
     </div>
