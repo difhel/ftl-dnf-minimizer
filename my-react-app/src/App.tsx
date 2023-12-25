@@ -71,14 +71,16 @@ const App: React.FC = () => {
 
   // saving color states from API
   const [states, updateStates] = useState([] as number[][][][]);
+  const [activeState, setActiveState] = useState(0);
 
   const renderStates =
     <div className={'stateSwitchers'}>
       {
         states.map((state, index) => {
           return (
-            <button key={index} onClick={
+            <button key={index} className={activeState == index ? 'active' : ''}onClick={
               () => {
+                setActiveState(index);
                 fillTable(state);
               }
             }>{index + 1}</button>
@@ -117,6 +119,8 @@ const App: React.FC = () => {
   //   //   resolve(true);
   //   // });
   // }, [buttonClicked])
+
+  useEffect(() => {setActiveState(states.length - 1);}, [states])
 
   const inputsForm = <form className={'inputs'} onSubmit={(e) => { e.preventDefault() }}>
     <label>Variables count: {variablesCount} {variablesCountInput}</label>
