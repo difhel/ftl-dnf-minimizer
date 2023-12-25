@@ -30,8 +30,8 @@ const App: React.FC = () => {
     updateStates([]);
   };
 
-  const fillTable = (newProps: TableProps) => {
-    setCellColors(newProps.cellColors);
+  const fillTable = (cellColors: number[][][]) => {
+    setCellColors(cellColors);
   }
 
   // table coloring
@@ -70,7 +70,7 @@ const App: React.FC = () => {
   const tableComponent = <MyTable head={headState} table={tableState} cellColors={cellColors} primaryColStart={1} primaryColEnd={variablesCountNotState} />;
 
   // saving color states from API
-  const [states, updateStates] = useState([] as TableProps[]);
+  const [states, updateStates] = useState([] as number[][][][]);
 
   const renderStates =
     <div className={'stateSwitchers'}>
@@ -101,7 +101,7 @@ const App: React.FC = () => {
       console.log("filling cell done", state[i][0], state[i][1], "with color", randomColor)
     }
     console.log("!!!", JSON.parse(JSON.stringify(tableComponent.props.cellColors)));
-    await updateStates(states => [...states, tableComponent.props])
+    await updateStates(states => [...states, JSON.parse(JSON.stringify(tableComponent.props.cellColors))])
     // await delay();
     // await new Promise(r => setTimeout(r, 1000));
     console.log("requesting useEffect")
