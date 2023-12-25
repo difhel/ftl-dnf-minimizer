@@ -11,7 +11,8 @@ const getData = async (array: string[][]): Promise<any> => {
     // one step is list of cells to color
     // this function returns list of all steps
     return [
-        [[0, 0], [0, 1], [0, 2], [1, 5]]
+        [[0, 0], [0, 1], [0, 2], [1, 5]],
+        [[2, 0], [2, 1], [2, 2], [2, 5]]
     ];
 }
 

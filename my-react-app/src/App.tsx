@@ -4,6 +4,7 @@ import getTable from './GetTable';
 import getData from './API';
 import './App.css';
 
+// const delay = () => new Promise((resolve) => setTimeout(resolve, 0));
 
 const App: React.FC = () => {
   const { head, table } = getTable(6, 59188n);
@@ -26,10 +27,15 @@ const App: React.FC = () => {
     setTableState(table);
     setHeadState(head);
     setCellColors(initialColors);
+    updateStates([]);
   };
 
+  const fillTable = (newProps: TableProps) => {
+    setCellColors(newProps.cellColors);
+  }
+
   // table coloring
-  const fillCell = (row: number, col: number, colorRGB: number[]) => {
+  const fillCell = async (row: number, col: number, colorRGB: number[]) => {
     const currentColor = cellColors[row][col];
     const newColor = [
       Math.round((currentColor[0] + colorRGB[0]) / 2),
@@ -39,7 +45,9 @@ const App: React.FC = () => {
 
     const newCellColors = [...cellColors];
     newCellColors[row][col] = newColor;
-    setCellColors(newCellColors);
+    await setCellColors(newCellColors);
+    console.log("set color for cell", row, col, "to", newColor)
+    return newColor;
 
     // const cellKey = `cell-${row}-${col}`;
     // console.log(cellKey);
@@ -58,6 +66,57 @@ const App: React.FC = () => {
   const [functionNumberNotState, setFunctionNumberNotState] = useState(functionNumber);
 
   const variablesCountInput = <input type={"range"} min={2} max={6} onChange={(event) => (setVariablesCount(parseInt(event.target.value)))} value={variablesCount} />;
+
+  const tableComponent = <MyTable head={headState} table={tableState} cellColors={cellColors} primaryColStart={1} primaryColEnd={variablesCountNotState} />;
+
+  // saving color states from API
+  const [states, updateStates] = useState([] as TableProps[]);
+
+  const renderStates =
+    <div className={'stateSwitchers'}>
+      {
+        states.map((state, index) => {
+          return (
+            <button key={index} onClick={
+              () => {
+                fillTable(state);
+              }
+            }>{index + 1}</button>
+          )
+        })
+      }
+    </div>
+
+  // const [buttonClicked, setButtonClicked] = useState(false); // helper for update table with data from API using useEffect with buttonClicked dependency
+
+  // update data with API
+  const fillWithOneState = async (state: number[][]) => {
+    const randomColor = [
+      Math.round(Math.random() * 255),
+      Math.round(Math.random() * 255),
+      Math.round(Math.random() * 255)
+    ]
+    for (let i = 0; i < state.length; i++) {
+      await fillCell(state[i][0], state[i][1], randomColor);
+      console.log("filling cell done", state[i][0], state[i][1], "with color", randomColor)
+    }
+    console.log("!!!", JSON.parse(JSON.stringify(tableComponent.props.cellColors)));
+    await updateStates(states => [...states, tableComponent.props])
+    // await delay();
+    // await new Promise(r => setTimeout(r, 1000));
+    console.log("requesting useEffect")
+    debugger;
+    console.log("function <stopped>")
+  }
+  // useEffect(() => {
+  //   console.log("use effect");
+  //   console.log(tableComponent.props.cellColors)
+  //   updateStates(states => [...states, tableComponent.props]);
+  //   // await new Promise(resolve => {
+  //   //   // setButtonClicked(buttonClicked => !buttonClicked);
+  //   //   resolve(true);
+  //   // });
+  // }, [buttonClicked])
 
   const inputsForm = <form className={'inputs'} onSubmit={(e) => { e.preventDefault() }}>
     <label>Variables count: {variablesCount} {variablesCountInput}</label>
@@ -78,20 +137,23 @@ const App: React.FC = () => {
     }}>Generate table</button>
 
     <br />
-    <button onClick={() => {
-      getData(table).then((data: number[][][]) => {
-        console.log(data);
-        const randomColor = [
-          Math.round(Math.random() * 255),
-          Math.round(Math.random() * 255),
-          Math.round(Math.random() * 255)
-        ]
-        for (let i = 0; i < data[0].length; i++) {
-          fillCell(data[0][i][0], data[0][i][1], randomColor);
-          // console.log('cell colors', cellColors);
+    <button
+      onClick={async () => {
+        const data = await getData(table)
+        for (let stateId = 0; stateId < data.length && stateId >= 0; stateId++) {
+          await fillWithOneState(data[stateId]);
+          // await delay();
+          // await new Promise(r => setTimeout(r, 5000));
+          console.log("stateId", stateId, "current colors[2]", states)
+          // if ((await fetch("https://jsonplaceholder.typicode.com/posts/1")).status == 400) break;
+          // setButtonClicked(buttonClicked => !buttonClicked)
+          // await new Promise(resolve => {
+          //   // setButtonClicked(buttonClicked => !buttonClicked);
+          //   resolve(true);
+          // });
         }
-      });
-    }}>Solve</button>
+      }}
+    >Solve</button>
   </form>;
 
   useEffect(() => {
@@ -109,9 +171,11 @@ const App: React.FC = () => {
 
       {inputsForm}
 
-      <MyTable head={headState} table={tableState} cellColors={cellColors} primaryColStart={1} primaryColEnd={variablesCountNotState} />
+      {tableComponent}
 
-      <button onClick={() => { fillCell(0, 0, [255, 0, 0]) }}>Magic</button>
+      {renderStates}
+
+      <button onClick={() => { console.log(states) }}>Magic</button>
     </div>
   );
 };
