@@ -26,3 +26,35 @@ form.inputs > label > input[type=number] {
   border: 0;
   border-radius: 8px;
 }
+
+.stateSwitchers > button {
+  border: none;
+  border-radius: 50%;
+  height: 35px;
+  width: 35px;
+  font-size: 1rem;
+  margin-right: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background: rgb(67, 0, 95);
+}
+
+.stateSwitchers > button:hover {
+  background: rgb(113, 0, 161);
+}
+
+.stateSwitchers > button.active {
+  background: none;
+  border: 1px solid rgb(67, 0, 95);
+  color: rgb(67, 0, 95);
+}
+
+button {
+  padding: 5px;
+  margin: 5px 0;
+  font-size: 0.8rem;
+}
+
+button:hover {
+  cursor: pointer;
+}
