@@ -1,17 +1,21 @@
 ## Installation
-1. Clone the `cpp-httplib` library
-
-`git clone https://github.com/yhirose/cpp-httplib.git`
-
-2. Install the `jsoncpp` library
-
+### Installing dependencies
+1. Install the [jsoncpp](https://github.com/open-source-parsers/jsoncpp) library. It is required for API and JSON encoding/decoding.
+On Debian-based distros, you can install it by
 `sudo apt-get install libjsoncpp-dev`
 
-3. Build the server
+2. Build the backend
 
-`cd backend && g++ main.cpp -o main.o -I/usr/include/jsoncpp -I../cpp-httplib -ljsoncpp`
+```bash
+cd backend && make
+```
 
-4. Start backend and frontend
+3. Build the frontent
+```bash
+cd my-react-app && npm run build
+```
+
+5. Start backend and frontend
 
 `./backend/main.o`
 
