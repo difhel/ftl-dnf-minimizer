@@ -2,21 +2,27 @@
 ### Installing dependencies
 1. Install the [jsoncpp](https://github.com/open-source-parsers/jsoncpp) library. It is required for API and JSON encoding/decoding.
 On Debian-based distros, you can install it by
-`sudo apt-get install libjsoncpp-dev`
+```bash
+sudo apt-get install libjsoncpp-dev
+```
 
-2. Build the backend
+3. Build the backend
 
 ```bash
 cd backend && make
 ```
 
-3. Build the frontent
+3. Build the frontend
 ```bash
 cd my-react-app && npm run build
 ```
 
 5. Start backend and frontend
 
-`./backend/main.o`
+```bash
+./backend/main.o
+```
 
-`cd my-react-app && npm run dev`
+```bash
+cd my-react-app && npm run preview
+```
