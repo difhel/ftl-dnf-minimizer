@@ -3,6 +3,9 @@
 #include <string>
 #include <json/json.h>
 #include <httplib.h>
+#include "constants.h"
+#include "errors.h"
+#define DEBUG false
 
 using namespace std;
 using namespace httplib;
@@ -14,27 +17,43 @@ int main() {
         res.set_content("Pong", "text/plain");
     });
 
-    svr.Post("/app", [](const Request& req, Response& res) {
+    svr.Post("/api", [](const Request& req, Response& res) {
         Json::Value json_req;
         Json::Reader reader;
 
-        // Парсинг JSON из тела запроса
+        // parse JSON body
         if (!reader.parse(req.body, json_req)) {
             res.status = 400;
-            res.set_content("Invalid JSON format", "text/plain");
+            res.set_content(errorToJSON(constants::errorInvalidBody).toStyledString(), "application/json");
             return;
         }
 
-        // Проверка, что входные данные содержат матрицу строк
-        if (!json_req.isMember("data") || !json_req["data"].isArray() || json_req["data"].empty()) {
+        if (!json_req.isArray() && !json_req.empty()) {
             res.status = 400;
-            res.set_content("Invalid input data format", "text/plain");
+            res.set_content(errorToJSON(constants::errorInvalidFormat).toStyledString(), "application/json");
             return;
         }
 
-        // Обработка данных (здесь может быть ваша логика)
+        // parsing request
+        std::vector<std::vector<std::string>> table;
+        for (int i = 0; i < json_req.size(); i++) {
+            std::vector<std::string> row;
+            for (int j = 0; j < json_req[i].size(); j++) {
+                row.push_back(json_req[i][j].asString());
+            }
+            table.push_back(row);
+        }
+        #ifdef DEBUG
+            cout << "Table:" << endl;
+            for (int i = 0; i < table.size(); i++) {
+                for (int j = 0; j < table[i].size(); j++) {
+                    cout << table[i][j] << " ";
+                }
+                cout << endl;
+            }
+        #endif
         Json::Value json_response;
-        json_response["data"] = json_req["data"];
+        json_response["data"] = json_req;
         json_response["answer"] = Json::Value(Json::arrayValue);
         json_response["answer"].append("a");
         json_response["answer"].append("b");
