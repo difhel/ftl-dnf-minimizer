@@ -37,6 +37,7 @@ form.inputs > label > input[type=number] {
   margin-top: 10px;
   margin-bottom: 10px;
   background: rgb(67, 0, 95);
+  color: #ffffff;
 }
 
 .stateSwitchers > button:hover {

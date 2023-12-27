@@ -5,7 +5,7 @@ import { request } from './API';
 import Latex from 'react-latex-next'
 import './App.css';
 
-// const delay = () => new Promise((resolve) => setTimeout(resolve, 0));
+const delay = () => new Promise((resolve) => setTimeout(resolve, 0));
 
 const App: React.FC = () => {
   const { head, table } = getTable(6, 59188n);
@@ -105,10 +105,10 @@ const App: React.FC = () => {
     }
     console.log("!!!", JSON.parse(JSON.stringify(tableComponent.props.cellColors)));
     await updateStates(states => [...states, JSON.parse(JSON.stringify(tableComponent.props.cellColors))])
-    // await delay();
-    // await new Promise(r => setTimeout(r, 1000));
+    await delay();
+    // await new Promise(r => r);
     console.log("requesting useEffect")
-    debugger;
+    // debugger;
     console.log("function <stopped>")
   }
   // useEffect(() => {
@@ -152,8 +152,8 @@ const App: React.FC = () => {
         for (let stateId = 0; stateId < data.length && stateId >= 0; stateId++) {
           await fillWithOneState(data[stateId]);
           console.log("stateId", stateId, "current colors[2]", states)
-          setAnswer(answers);
         }
+        setAnswer(answers);
       }}
     >Solve</button>
   </form>;
