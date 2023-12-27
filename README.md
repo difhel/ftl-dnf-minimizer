@@ -6,18 +6,28 @@ On Debian-based distros, you can install it by
 sudo apt-get install libjsoncpp-dev
 ```
 
-3. Build the backend
+2. Clone the repo
+```bash
+git clone https://github.com/difhel/ftl-dnf-minimizer
+```
+
+3. Clone submodules
+```bash
+git submodule update --init
+```
+
+4. Build the backend
 
 ```bash
 cd backend && make
 ```
 
-3. Build the frontend
+5. Build the frontend
 ```bash
 cd my-react-app && npm run build
 ```
 
-5. Start backend and frontend
+6. Start backend and frontend
 
 ```bash
 ./backend/main.o
