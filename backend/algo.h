@@ -11,14 +11,25 @@ struct cell {
 };
 
 using state = std::vector<cell>;
-using states = std::vector<state>;
+using statesT = std::vector<state>;
 
-states getStates(std::vector<std::vector<std::string>> table) {
+struct answer {
+    statesT states;
+    std::vector<std::string> answers;
+};
+
+answer getAnswer(std::vector<std::vector<std::string>> table) {
     // some ✨magic✨
-    return {
+    answer ans;
+    ans.states = {
         {
             {1, 1},
             {2, 5}
         }
-    }
-}
+    };
+    ans.answers = {
+        "a \\vee b \\vee c",
+        "b \\neg d \\vee c"
+    };
+    return ans;
+};

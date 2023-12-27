@@ -1,4 +1,5 @@
 const request = async (array: string[][]): Promise<any> => {
+    array;
     // const response = await fetch('http://localhost:3000/api', {
     //     method: 'POST',
     //     headers: {

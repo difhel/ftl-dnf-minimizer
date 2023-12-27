@@ -5,7 +5,9 @@
 #include <httplib.h>
 #include "constants.h"
 #include "errors.h"
-#define DEBUG false
+#include "parseResponse.h"
+#include "algo.h"
+#define DEBUG true
 
 using namespace std;
 using namespace httplib;
@@ -52,11 +54,8 @@ int main() {
                 cout << endl;
             }
         #endif
-        Json::Value json_response;
-        json_response["data"] = json_req;
-        json_response["answer"] = Json::Value(Json::arrayValue);
-        json_response["answer"].append("a");
-        json_response["answer"].append("b");
+        auto ans = getAnswer(table);
+        Json::Value json_response = responseToJSON(ans.states, ans.answers);
 
         // Отправка JSON-ответа
         res.set_content(json_response.toStyledString(), "application/json");
