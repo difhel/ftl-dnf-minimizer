@@ -23,8 +23,13 @@ answer getAnswer(std::vector<std::vector<std::string>> table) {
     answer ans;
     ans.states = {
         {
-            {1, 1},
-            {2, 5}
+            {0, 0}, {0, 1}, {0, 2}, {1, 5}
+        },
+        {
+            {2, 0}, {2, 1}, {2, 2}, {2, 5}
+        },
+        {
+            {3, 0}, {3, 5}, {3, 6}, {3, 10}
         }
     };
     ans.answers = {

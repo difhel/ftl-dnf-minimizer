@@ -19,7 +19,14 @@ int main() {
         res.set_content("Pong", "text/plain");
     });
 
+    svr.Options("/api", [](const Request& req, Response& res) {
+        res.set_header("Access-Control-Allow-Origin", "*");
+        res.set_header("Access-Control-Allow-Headers", "*");
+        res.set_header("Access-Control-Fuck-Chrome", "kys");
+    });
+
     svr.Post("/api", [](const Request& req, Response& res) {
+        res.set_header("Access-Control-Allow-Origin", "*");
         Json::Value json_req;
         Json::Reader reader;
 
@@ -46,13 +53,13 @@ int main() {
             table.push_back(row);
         }
         #ifdef DEBUG
-            cout << "Table:" << endl;
-            for (int i = 0; i < table.size(); i++) {
-                for (int j = 0; j < table[i].size(); j++) {
-                    cout << table[i][j] << " ";
-                }
-                cout << endl;
-            }
+            // cout << "Table:" << endl;
+            // for (int i = 0; i < table.size(); i++) {
+            //     for (int j = 0; j < table[i].size(); j++) {
+            //         cout << table[i][j] << " ";
+            //     }
+            //     cout << endl;
+            // }
         #endif
         auto ans = getAnswer(table);
         Json::Value json_response = responseToJSON(ans.states, ans.answers);
@@ -61,8 +68,8 @@ int main() {
         res.set_content(json_response.toStyledString(), "application/json");
     });
 
-    std::cout << "Server started on http://localhost:8080" << endl;
-    svr.listen("0.0.0.0", 8080);
+    // std::string ipaddr    std::cout << "Server started on http://localhost:8080" << endl;
+    svr.listen("172.20.144.1", 8082);
 
     return 0;
 }
