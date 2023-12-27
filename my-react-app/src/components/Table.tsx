@@ -12,6 +12,7 @@ interface TableProps {
 
 const MyTable: React.FC<TableProps> = (props: TableProps) => {
     const { table, head, primaryColStart, primaryColEnd, cellColors } = props;
+    console.log('table', table);
 
     const renderTable = () => {
         const tableRows = cellColors.map((row, rowIndex) => (

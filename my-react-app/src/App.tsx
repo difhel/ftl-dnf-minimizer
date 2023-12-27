@@ -147,8 +147,8 @@ const App: React.FC = () => {
     <br />
     <button
       onClick={async () => {
-        const data = (await request(table)).data;
-        const answers = (await request(table)).answer;
+        const data = (await request(tableState)).data;
+        const answers = (await request(tableState)).answer;
         for (let stateId = 0; stateId < data.length && stateId >= 0; stateId++) {
           await fillWithOneState(data[stateId]);
           console.log("stateId", stateId, "current colors[2]", states)
@@ -182,7 +182,7 @@ const App: React.FC = () => {
 
   return (
     <div>
-      <h1>BDSM maximizer</h1>
+      <h1>DNF minimizer</h1>
 
       {inputsForm}
 
