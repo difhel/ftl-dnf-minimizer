@@ -3,3 +3,6 @@ main.o: main.cpp
 
 run: main.o
 	./main.o
+
+recompile: main.cpp
+	g++ main.cpp -o main.o -I/usr/include/jsoncpp -I../cpp-httplib -ljsoncpp -g

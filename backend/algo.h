@@ -86,7 +86,9 @@ answer getAnswer(std::vector<std::vector<std::string>> table) {
                     states.push_back({});
                 }
                 states[states.size() - 1].push_back(cell(j, i));
-                deletedCells.insert(cell(i, j));
+                deletedCells.insert(cell(j, i));
+                std::cout << "step 2: deleted " << j << " " << i << std::endl;
+                std::cout << "deleted cell should be in the state#" << states.size() - 1 << std::endl;
             }
         }
     }
@@ -110,7 +112,9 @@ answer getAnswer(std::vector<std::vector<std::string>> table) {
         // j - col
         std::vector<std::pair<std::string, cell>> nonColored;
         // non colored cells ONLY FOR THIS ROW
-
+        // print deletedCells
+        std::cout << "deletedCells: " << std::endl;
+        for (auto x : deletedCells) std::cout << x.row << " " << x.col << std::endl;
         for (int j = 1; j < table[0].size(); ++j) {
             if (deletedCells.find(cell(i, j)) == deletedCells.end()) {
                 // this cell is not colored
@@ -157,8 +161,8 @@ answer getAnswer(std::vector<std::vector<std::string>> table) {
             }
             states[states.size() - 1].push_back(c);
             deletedCells.insert(c);
-            std::cout << "DELETING: " << c.row << " " << c.col << std::endl;
-            std::cout << "(1) Was deleted: " << (deletedCells.find(c) != deletedCells.end()) << std::endl;
+            std::cout << "state 3: deleted " << c.row << " " << c.col << std::endl;
+            // std::cout << "(1) Was deleted: " << (deletedCells.find(c) != deletedCells.end()) << std::endl;
             // nonColored.erase(c);
         }
         if (!nonColored.empty()) answerChoices.push_back({});
@@ -169,7 +173,6 @@ answer getAnswer(std::vector<std::vector<std::string>> table) {
                 // std::cout << "deleted != ans " << x.second.row << " " << x.second.col << std::endl;
                 continue;
             }
-            std::cout << "deleted == ans " << x.second.row << " " << x.second.col << std::endl;
             answerChoices[answerChoices.size() - 1].push_back(x.first);
         }
     }
