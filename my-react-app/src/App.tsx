@@ -68,7 +68,7 @@ const App: React.FC = () => {
 
   const variablesCountInput = <input type={"range"} min={2} max={6} onChange={(event) => (setVariablesCount(parseInt(event.target.value)))} value={variablesCount} />;
 
-  const tableComponent = <MyTable head={headState} table={tableState} cellColors={cellColors} primaryColStart={1} primaryColEnd={variablesCountNotState} />;
+  const tableComponent = <MyTable head={headState} table={tableState} cellColors={cellColors} primaryColStart={0} primaryColEnd={0} />;
 
   // saving color states from API
   const [states, updateStates] = useState([] as number[][][][]);
@@ -176,7 +176,7 @@ const App: React.FC = () => {
     let { head, table } = getTable(variablesCountNotState, functionNumberNotState);
     // console.log('functionNumberNotState', functionNumberNotState);
     // console.log('head', head);
-    updateTableData({ cellColors: cellColors, table: table, head: head, primaryColStart: 1, primaryColEnd: 10 })
+    updateTableData({ cellColors: cellColors, table: table, head: head, primaryColStart: 0, primaryColEnd: 0 })
   }, [functionNumberNotState, variablesCountNotState])
 
 
