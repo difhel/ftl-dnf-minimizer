@@ -1,3 +1,4 @@
+#define DEBUG true
 #include <iostream>
 #include <vector>
 #include <string>
@@ -7,7 +8,6 @@
 #include "errors.h"
 #include "parseResponse.h"
 #include "algo.h"
-#define DEBUG true
 
 using namespace std;
 using namespace httplib;
