@@ -7,6 +7,7 @@
 #include <set>
 #include "permutations.h"
 #include <iostream>
+#include <sstream>
 
 struct cell {
     cell(int row, int col): row(row), col(col) {};
@@ -33,10 +34,84 @@ std::string join(const std::set<std::string>& inputSet) {
         ++it;
     }
     for (; it != inputSet.end(); ++it) {
-        result += " \\vee " + *it;
+        result += "|" + *it;
     }
     return result;
 }
+
+std::string join(const std::vector<std::string>& inputSet, std::string separator = "|") {
+    std::string result;
+    auto it = inputSet.begin();
+    if (it != inputSet.end()) {
+        result += *it;
+        ++it;
+    }
+    for (; it != inputSet.end(); ++it) {
+        result += separator + *it;
+    }
+    return result;
+}
+
+int countSubstrings(const std::string& str, const std::string& substr) {
+    int count = 0;
+    size_t pos = str.find(substr, 0);
+    while (pos != std::string::npos) {
+        count++;
+        pos = str.find(substr, pos + substr.length());
+    }
+    return count;
+}
+
+std::vector<std::string> splitString(const std::string& input, char delimiter) {
+    std::vector<std::string> result;
+    std::stringstream ss(input);
+    std::string token;
+
+    while (std::getline(ss, token, delimiter)) {
+        result.push_back(token);
+    }
+
+    return result;
+}
+
+std::vector<std::string> formatAnswers(const std::vector<std::string>& answers) {
+    std::vector<std::string> result;
+    const std::vector<char> variables = generateVariables(6);
+    for (auto x : answers) {
+        std::vector<std::string> cur = splitString(x, '|');
+        std::vector<std::string> curAnswer;
+        for (auto y : cur) {
+            curAnswer.push_back("");
+            for (int i = 0; i < y.size(); ++i) {
+                if (y[i] == '1') {
+                    curAnswer[curAnswer.size() - 1] += variables[i];
+                } else if (y[i] == '?') {
+                    continue;
+                } else {
+                    curAnswer[curAnswer.size() - 1] += "\\bar{";
+                    curAnswer[curAnswer.size() - 1] += variables[i];
+                    curAnswer[curAnswer.size() - 1] += "}";
+                }
+            }
+        }
+        result.push_back(join(curAnswer, " \\vee "));
+    }
+    return result;
+}
+
+void removeDuplicates(std::vector<std::string>& vec) {
+    std::sort(vec.begin(), vec.end(), [](const std::string& a, const std::string& b) {
+        return countSubstrings(a, "|") < countSubstrings(b, "|");
+    });
+    vec.erase(std::unique(vec.begin(), vec.end()), vec.end());
+    int minCount = countSubstrings(vec.front(), "|");
+    vec.erase(std::remove_if(vec.begin(), vec.end(),
+                                     [minCount](const std::string& str) {
+                                         return countSubstrings(str, "|") > minCount;
+                                     }),
+                      vec.end());
+}
+
 
 void getOnlyAnswers(std::set<std::string> &curResult, std::vector<std::vector<std::string>> &answerChoices, int i, std::vector<std::string> &results) {
     if (i == answerChoices.size() - 1) {
@@ -193,8 +268,8 @@ answer getAnswer(std::vector<std::vector<std::string>> table) {
     //     }
     // };
     // ans.answers = {
-    //     "a \\vee b \\vee c",
-    //     "b \\neg d \\vee c"
+    //     "a | b | c",
+    //     "b \\neg d | c"
     // };
     std::set<std::string> curResult;
     std::vector<std::string> results;
@@ -204,6 +279,7 @@ answer getAnswer(std::vector<std::vector<std::string>> table) {
         std::cout << std::endl;
     }
     getOnlyAnswers(curResult, answerChoices, -1, results);
-    ans.answers = results;
+    removeDuplicates(results);
+    ans.answers = formatAnswers(results);
     return ans;
 };
