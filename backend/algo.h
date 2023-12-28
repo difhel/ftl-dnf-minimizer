@@ -13,8 +13,7 @@ struct cell {
     int row;
     int col;
     bool operator<(const cell &other) const {
-        if (this-> row == other.col) return this->col < other.col;
-        return this->row < other.col;
+        return std::pair(row, col) < std::pair(other.row, other.col);
     }
 };
 
@@ -26,23 +25,50 @@ struct answer {
     std::vector<std::string> answers;
 };
 
+std::string join(const std::set<std::string>& inputSet) {
+    std::string result;
+    auto it = inputSet.begin();
+    if (it != inputSet.end()) {
+        result += *it;
+        ++it;
+    }
+    for (; it != inputSet.end(); ++it) {
+        result += " \\vee " + *it;
+    }
+    return result;
+}
+
+void getOnlyAnswers(std::set<std::string> &curResult, std::vector<std::vector<std::string>> &answerChoices, int i, std::vector<std::string> &results) {
+    if (i == answerChoices.size() - 1) {
+        results.push_back(join(curResult));
+        return;
+    }; // recursion depth
+    for (int x = 0; x < answerChoices[i + 1].size(); ++x) {
+        auto newResult = curResult;
+        newResult.insert(answerChoices[i + 1][x]);
+        getOnlyAnswers(newResult, answerChoices, i + 1, results);
+    }
+}
+
 answer getAnswer(std::vector<std::vector<std::string>> table) {
     // some ✨magic✨
 
     std::set<cell> deletedCells; // we will store it to avoid duplicates
+
     // step 1: remove all lines, that have f(args) = 0
     statesT states;
     states.push_back({});
 
     const int variableCount = log2(table.size());
-    std::vector<std::set<std::string>> colored(table.size() - 1 - variableCount);
+    std::vector<std::set<std::string>> colored(table.size() - 1);
+    // key - the col number, value - set of colored values
 
     for (int i = 0; i < table.size(); ++i) {
         // if f(args) = 0
         if (table[i][0] == "0") {
-            for (int j = variableCount + 1; j < table[i].size(); ++j) {
+            for (int j = 1; j < table[i].size(); ++j) {
                 states[0].push_back(cell(i, j));
-                colored[j - variableCount - 1].insert(table[i][j]);
+                colored[j - 1].insert(table[i][j]);
                 deletedCells.insert(cell(i, j));
             }
         }
@@ -50,11 +76,11 @@ answer getAnswer(std::vector<std::vector<std::string>> table) {
 
     // step 2: we create set with colored cells and coloring all equal
     // 0 -> ab, 1 -> ac, ...
-    for (int i = variableCount + 1; i < table[0].size(); ++i) {
+    for (int i = 1; i < table[0].size(); ++i) {
         // iterating through columns
         bool addedNewState = false;
         for (int j = 0; j < table.size(); ++j) {
-            if (colored[i - variableCount - 1].find(table[j][i]) != colored[i - variableCount - 1].end()) {
+            if (colored[i - 1].find(table[j][i]) != colored[i - 1].end()) {
                 if (!addedNewState) {
                     addedNewState = true;
                     states.push_back({});
@@ -65,6 +91,7 @@ answer getAnswer(std::vector<std::vector<std::string>> table) {
         }
     }
     states.push_back({cell(0, 0)});
+
     // step 3: applying the law of absorption
     #ifdef DEBUG
         // auto temp1 = generateVariables(3);
@@ -74,11 +101,18 @@ answer getAnswer(std::vector<std::vector<std::string>> table) {
     #endif
     const std::vector<char> variables = generateVariables(variableCount);
     const std::vector<std::string> permutations = generatePermutations(variables);
+    std::vector<std::vector<std::string>> answerChoices;
     for (int i = 0; i < table.size(); ++i) {
         // vector of non-colored cells (in the format abcdef -> 001??0)
+
+
+        // i - row
+        // j - col
         std::vector<std::pair<std::string, cell>> nonColored;
-        for (int j = variableCount + 1; j < table[0].size(); ++j) {
-            if (colored[j - variableCount - 1].find(table[i][j]) == colored[j - variableCount - 1].end()) {
+        // non colored cells ONLY FOR THIS ROW
+
+        for (int j = 1; j < table[0].size(); ++j) {
+            if (deletedCells.find(cell(i, j)) == deletedCells.end()) {
                 // this cell is not colored
                 nonColored.push_back({"", cell(i, j)});
                 std::string usedVariables = getUsedChars(permutations, j, variableCount);
@@ -123,8 +157,25 @@ answer getAnswer(std::vector<std::vector<std::string>> table) {
             }
             states[states.size() - 1].push_back(c);
             deletedCells.insert(c);
+            std::cout << "DELETING: " << c.row << " " << c.col << std::endl;
+            std::cout << "(1) Was deleted: " << (deletedCells.find(c) != deletedCells.end()) << std::endl;
+            // nonColored.erase(c);
+        }
+        if (!nonColored.empty()) answerChoices.push_back({});
+        for (auto x : nonColored) {
+            std::cout << "ADDING TO ANSWER : " << x.second.row << " " << x.second.col << std::endl;
+            std::cout << "Was deleted: " << (deletedCells.find(x.second) != deletedCells.end()) << std::endl;
+            if (deletedCells.find(x.second) != deletedCells.end()) {
+                // std::cout << "deleted != ans " << x.second.row << " " << x.second.col << std::endl;
+                continue;
+            }
+            std::cout << "deleted == ans " << x.second.row << " " << x.second.col << std::endl;
+            answerChoices[answerChoices.size() - 1].push_back(x.first);
         }
     }
+
+    // step 4: getting answers
+    
     answer ans;
     ans.states = states;
     // ans.states = {
@@ -138,9 +189,18 @@ answer getAnswer(std::vector<std::vector<std::string>> table) {
     //         {3, 0}, {3, 5}, {3, 6}, {3, 10}
     //     }
     // };
-    ans.answers = {
-        "a \\vee b \\vee c",
-        "b \\neg d \\vee c"
-    };
+    // ans.answers = {
+    //     "a \\vee b \\vee c",
+    //     "b \\neg d \\vee c"
+    // };
+    std::set<std::string> curResult;
+    std::vector<std::string> results;
+    std::cout << "answerChoices: " << std::endl;
+    for (auto x : answerChoices) {
+        for (auto y : x) std::cout << y << " ";
+        std::cout << std::endl;
+    }
+    getOnlyAnswers(curResult, answerChoices, -1, results);
+    ans.answers = results;
     return ans;
 };
