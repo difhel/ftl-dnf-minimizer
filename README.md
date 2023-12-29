@@ -5,10 +5,12 @@
 The DNF minimization problem involves simplifying a boolean expression represented in DNF. DNF is a standard way of representing Boolean functions where the expression is a disjunction (OR) of one or more conjunctions (AND) of literals. Each conjunction represents a term in the Boolean function.
 
 The length of the DNF $L(f)$ is the total number of variables and their negations included in all elementary conjunctions. For example:
+
 $$
 \begin{gathered}
 f=x\bar{y}z\vee xy \vee \bar{z} \\
-L(f)=6\end{gathered}$$
+L(f)=6\end{gathered}
+$$
 
 This program takes the number of variables of a boolean function, its number, and outputs a list of all the shortest DNFs.
 
